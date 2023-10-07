@@ -1,51 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class ButtonManager : MonoBehaviour
 {
-    public Vector3 originalPos, targetPos, targetSize, targetRotation;
-    public float speed, rotatedDuration, fadeDuration;
+    public GameObject Leafimg;
+    [SerializeField] private CanvasGroup LeafGroup;
+    public Rigidbody LeafRigid;
 
-    public GameObject targetGameObj, targetImage;
 
-    // Start is called before the first frame update
-    void Start()
+    public void FadeScale()
     {
+        Leafimg.transform.DOScale(3f, 0.5f).OnComplete(() =>
+        {
+            Leafimg.transform.DOScale(5.3f, 0.5f);
+        });
+        LeafGroup.DOFade(0f, 0.5f).OnComplete(() => {
+            LeafGroup.DOFade(1, 0.5f);
+        });
+       
+    }
+
+    public void Zoom()
+    {
+        Leafimg.transform.DOScale(0f, 0.5f).OnComplete(() =>
+        {
+            Leafimg.transform.DOScale(5.3f, 0.5f);
+        });
+    }
+
+    public void Flip()
+    {
+        LeafRigid.DORotate(new Vector3(0, 360, 0), 1,RotateMode.FastBeyond360);
+    }
+
+    public void Fly()
+    {
+        LeafRigid.DOMove(new Vector3(540, 2500, 0), 1).SetEase(Ease.InBounce).OnComplete(() =>
+        {
+            LeafRigid.DOMove(new Vector3(540, 1385, 0), 1).SetEase(Ease.InBounce);
+        });
 
     }
 
-    // Update is called once per frame
-
-    public void SequenceTween()
+    public void Fade()
     {
-        //1st task
-        //Sequence.Append(targetGameObj.transform.DOLocalMove(target))
+        LeafGroup.DOFade(0f, 0.5f).OnComplete(() => {
+            LeafGroup.DOFade(1, 0.5f);
+        });
     }
 
-    public void MoveTween()
+    public void FlipUpsidedown()
     {
-        targetGameObj.transform.DOLocalMove(targetPos, speed).SetEase(Ease.Linear).OnComplete(() => ReturnPos());
+        LeafRigid.DORotate(new Vector3(360, 0, 0), 1, RotateMode.FastBeyond360);
     }
 
-    public void ReturnPos()
+    public void Exit()
     {
-        targetGameObj.transform.DOLocalMove(originalPos, speed).SetEase(Ease.Linear);
-    }
-
-    public void ScaleTween()
-    {
-        targetGameObj.transform.DOScale(Vector3.zero, speed).SetEase(Ease.Linear);
-    }
-
-    public void FadeTween()
-    {
-        //targetImage.DOFade(0, fadeDuration);
-    }
-
-    public void RotateTween()
-    {
-        targetGameObj.transform.DOLocalRotate(targetRotation, rotatedDuration).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        Application.Quit();
     }
 }
+/*540 501*/
